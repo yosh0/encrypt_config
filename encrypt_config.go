@@ -23,7 +23,7 @@ func main() {
     	key := hex.EncodeToString(hasher.Sum(nil))
 	fmt.Println(key)
 
-	file, err := os.Open("asterisk_config.json")
+	file, err := os.Open("your_config.json")
    	if err != nil {
      		fmt.Println(err)
      		os.Exit(1)
@@ -36,7 +36,7 @@ func main() {
         fmt.Println(count)
 	message := string(data[:count])
 	ciphertext := encrypt(message, key)
-	writeToFile(ciphertext, "astconf")
+	writeToFile(ciphertext, "conf")
 }
 
 func writeToFile(data, file string) {

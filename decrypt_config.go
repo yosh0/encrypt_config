@@ -32,7 +32,7 @@ func main() {
     	key := hex.EncodeToString(hasher.Sum(nil))
 	fmt.Println(key)
 
-	file, err := os.Open("astconf")
+	file, err := os.Open("conf")
    	if err != nil {
      		fmt.Println(err)
      		os.Exit(1)
@@ -46,6 +46,13 @@ func main() {
 	ciphertext := string(data[:count])
 	plaintext := decrypt(string(ciphertext), key)
 	fmt.Println(string(plaintext))
+	buf := bytes.NewBufferString("")
+	buf.Write([]byte(plaintext))
+	dst := "your_config.json"
+	f, _ := os.OpenFile(dst, os.O_WRONLY | os.O_CREATE | os.O_APPEND, 0666)
+	f.Write(buf.Bytes())
+	defer f.Close()
+
 	respByte := bytes.NewReader(plaintext)
 	decoder := json.NewDecoder(io.Reader(respByte))
 	conf := Config{}
