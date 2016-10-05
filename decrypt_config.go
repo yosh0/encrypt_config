@@ -14,19 +14,12 @@ import (
 )
 
 type Config struct  {
-	Tg Tg
-}
 
-type Tg struct {
-	Rcp []string
-	Path string
 }
 
 func main() {
-
-	k := os.Getenv("ASTCONFIG")
-
     	hasher := md5.New()
+	k := os.Getenv("ASTCONFIG")
     	hasher.Write([]byte(k))
     	fmt.Println(k)
     	key := hex.EncodeToString(hasher.Sum(nil))
@@ -37,7 +30,7 @@ func main() {
      		fmt.Println(err)
      		os.Exit(1)
    	}
-	data := make([]byte, 10000)
+	data := make([]byte, 20000)
 	count, err := file.Read(data)
 	if err != nil {
 		log.Fatal(err)
@@ -66,36 +59,18 @@ func main() {
 }
 
 func decrypt(cipherstring string, keystring string) []byte {
-	// Byte array of the string
 	ciphertext := []byte(cipherstring)
-
-	// Key
 	key := []byte(keystring)
-
-	// Create the AES cipher
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
 	}
-
-	// Before even testing the decryption,
-	// if the text is too small, then it is incorrect
 	if len(ciphertext) < aes.BlockSize {
 		panic("Text is too short")
 	}
-
-	// Get the 16 byte IV
 	iv := ciphertext[:aes.BlockSize]
-
-	// Remove the IV from the ciphertext
 	ciphertext = ciphertext[aes.BlockSize:]
-
-	// Return a decrypted stream
 	stream := cipher.NewCFBDecrypter(block, iv)
-
-	// Decrypt bytes from ciphertext
 	stream.XORKeyStream(ciphertext, ciphertext)
-
-//	return string(ciphertext)
 	return ciphertext
 }
